@@ -1,10 +1,8 @@
 from models.models import FavouriteMovies, Movies, Users
 
-# alle METHODEN die CRUD operationen durchführen, hier zum Wiederverwenden erstellen
-# !! Klassen ohne klammer sind ohne vererbung!
 class DataManager:
     def __init__(self, db):
-        self.db = db  # merken, welche DB wir verwenden
+        self.db = db
 
 
     def create_user(self, name):
@@ -18,15 +16,15 @@ class DataManager:
         return users
 
 
-    def get_movies(self, user_id):  # user_id wird übergeben
-        movies = (self.db.session.query(Movies)   #movies ist die haupttabelle, von da fange ich an
-                  .join(FavouriteMovies, Movies.id == FavouriteMovies.movie_id)  # hier habe ich gejoined!
-                  .filter(FavouriteMovies.user_id == user_id)  #user_id wird als parameter übergeben
+    def get_movies(self, user_id):
+        movies = (self.db.session.query(Movies)
+                  .join(FavouriteMovies, Movies.id == FavouriteMovies.movie_id)
+                  .filter(FavouriteMovies.user_id == user_id)
                   .all())
         return movies
 
 
-    def add_movie(self, title, director, year, poster_url, user_id):  # was ist movie, was wird her übergeben?
+    def add_movie(self, title, director, year, poster_url, user_id):
         # 1. Movie-Objekt bauen und speichern
         new_movie = Movies(title=title, director=director, year=year,poster_url=poster_url)
         self.db.session.add(new_movie)
