@@ -16,7 +16,7 @@ class DataManager:
         return users
 
 
-    def get_movies(self, user_id):
+    def get_favourite_movies(self, user_id):
         movies = (self.db.session.query(Movies)
                   .join(FavouriteMovies, Movies.id == FavouriteMovies.movie_id)
                   .filter(FavouriteMovies.user_id == user_id)
@@ -36,19 +36,17 @@ class DataManager:
         self.db.session.commit()
 
 
-    def update_movie(self, movie_id, new_title, new_director, new_year, new_poster_url):
+    def update_movie(self, movie_id, new_title):
         movie_to_update = (
             self.db.session.query(Movies)
             .filter(Movies.id == movie_id)
             .one()
         )
         movie_to_update.title = new_title
-        movie_to_update.director = new_director
-        movie_to_update.year = new_year
-        movie_to_update.poster_url = new_poster_url
         self.db.session.commit()
 
 
     def delete_movie(self, movie_id):
+        self.db.session.query(FavouriteMovies).filter(FavouriteMovies.movie_id == movie_id).delete()
         self.db.session.query(Movies).filter(Movies.id == movie_id).delete()
         self.db.session.commit()

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, redirect, url_for, render_template
 from data_manager import DataManager
 from models.models import db, Movies
 import os
@@ -14,17 +14,47 @@ db.init_app(app)  # Link the database and the app. This is the reason you need t
 
 data_manager = DataManager(db) # Create an object of your DataManager class
 
-# Testfunktion
-@app.route('/')
+
+@app.route('/', methods=['GET'])
 def home():
-    return "Welcome to MoviWeb App!"
-
-
-@app.route('/users', methods=['GET'])
-def list_users():
     users = data_manager.get_users()
-    users_list = [{"id": user.id, "name": user.name} for user in users]  # List Comprehension, weil jsonify keine Objekte returnen kann
-    return jsonify(users_list)
+    return render_template('index.html', users=users)
+
+
+@app.route('/users', methods=['POST'])
+def add_user():
+    name = request.form['username']
+    data_manager.create_user(name)
+    return redirect(url_for('home'))
+
+
+@app.route('/users/<int:user_id>/movies', methods=['GET'])
+def list_favourite_movies(user_id):
+    movies = data_manager.get_favourite_movies(user_id)
+    return render_template('movies.html', movies=movies)
+
+
+@app.route('/users/<int:user_id>/movies', methods=['POST'])
+def add_favourite_movie(user_id):
+    title = request.form['title']
+    director = request.form['director']
+    year = request.form['year']
+    poster_url = "https://example.com/poster.jpg"  #TODO API ObdM
+    data_manager.add_movie(title, director, year, poster_url, user_id)
+    return redirect(url_for('list_favourite_movies', user_id=user_id))
+
+
+@app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['POST'])
+def update_movie_title(user_id, movie_id):
+    new_title = request.form['title']
+    data_manager.update_movie(movie_id, new_title)
+    return redirect(url_for('list_favourite_movies', user_id=user_id))
+
+
+@app.route('/users/<int:user_id>/movies/<int:movie_id>/delete', methods=['POST'])
+def delete_favourite_movie(user_id, movie_id):
+    data_manager.delete_movie(movie_id)
+    return redirect(url_for('list_favourite_movies', user_id=user_id))
 
 
 if __name__ == '__main__':
