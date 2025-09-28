@@ -1,10 +1,13 @@
 from flask import Flask, jsonify, request, redirect, url_for, render_template
 from data_manager import DataManager
 from models.models import db, Movies
+import requests
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data/movies.db')}"
@@ -13,6 +16,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)  # Link the database and the app. This is the reason you need to import db from models
 
 data_manager = DataManager(db) # Create an object of your DataManager class
+
+
+def get_omdb_url(title):
+    KEY = os.getenv('KEY')
+    return f"http://www.omdbapi.com/?t={title}&apikey={KEY}"
 
 
 @app.route('/', methods=['GET'])
@@ -39,7 +47,12 @@ def add_favourite_movie(user_id):
     title = request.form['title']
     director = request.form['director']
     year = request.form['year']
-    poster_url = "https://example.com/poster.jpg"  #TODO API ObdM
+
+    omdb_url = get_omdb_url(title)
+    response = requests.get(omdb_url)
+    data = response.json()
+    poster_url = data.get('Poster', 'IMAGE N/A')
+
     data_manager.add_movie(title, director, year, poster_url, user_id)
     return redirect(url_for('list_favourite_movies', user_id=user_id))
 
