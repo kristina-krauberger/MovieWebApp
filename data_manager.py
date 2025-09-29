@@ -16,6 +16,10 @@ class DataManager:
         return users
 
 
+    def get_user(self, user_id):
+        return self.db.session.query(Users).get(user_id)
+
+
     def get_favourite_movies(self, user_id):
         movies = (self.db.session.query(Movies)
                   .join(FavouriteMovies, Movies.id == FavouriteMovies.movie_id)

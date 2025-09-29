@@ -40,7 +40,8 @@ def add_user():
 @app.route('/users/<int:user_id>/movies', methods=['GET'])
 def list_favourite_movies(user_id):
     movies = data_manager.get_favourite_movies(user_id)
-    return render_template('movies.html', movies=movies)
+    user = data_manager.get_user(user_id)
+    return render_template('movies.html', movies=movies, user_id=user_id, user=user)
 
 
 @app.route('/users/<int:user_id>/movies', methods=['POST'])
