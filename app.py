@@ -24,16 +24,17 @@ def get_omdb_url(title):
 
 
 @app.route('/', methods=['GET'])
-def home():
+def index():
     users = data_manager.get_users()
     return render_template('index.html', users=users)
 
 
 @app.route('/users', methods=['POST'])
 def add_user():
-    name = request.form['username']
+    name = request.form['name']
+    print(f"test, {name}")
     data_manager.create_user(name)
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 
 @app.route('/users/<int:user_id>/movies', methods=['GET'])
@@ -74,4 +75,4 @@ if __name__ == '__main__':
   with app.app_context():
     db.create_all()
 
-  app.run()
+  app.run(port=5001)

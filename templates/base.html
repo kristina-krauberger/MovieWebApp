@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>MOVIE WEB APP</h1>
+    <div class="topnav">
+      <a class="active" href="{{ url_for('index')}}">Home</a>
+    </div>
+    <main class="container">
+            {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>
