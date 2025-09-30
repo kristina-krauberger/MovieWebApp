@@ -47,12 +47,12 @@ def list_favourite_movies(user_id):
 @app.route('/users/<int:user_id>/movies', methods=['POST'])
 def add_favourite_movie(user_id):
     title = request.form['title']
-    director = request.form['director']
-    year = request.form['year']
 
     omdb_url = get_omdb_url(title)
     response = requests.get(omdb_url)
     data = response.json()
+    director = data.get('Director', 'NA/')
+    year = data.get('Year', 'N/A')
     poster_url = data.get('Poster', 'IMAGE N/A')
 
     data_manager.add_movie(title, director, year, poster_url, user_id)
