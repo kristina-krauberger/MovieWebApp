@@ -11,7 +11,7 @@
   <label for="name">Name:</label>
   <input type="text" id="name" name="name"><br><br>
   <input type="submit" value="Submit">
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(category_filter=["add_user_error", "db_error"]) %}
   {% if messages %}
     <ul>
       {% for message in messages %}
@@ -19,7 +19,7 @@
       {% endfor %}
     </ul>
   {% endif %}
-  {% endwith %}
+{% endwith %}
 </form>
 {% endblock %}
 
