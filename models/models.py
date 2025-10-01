@@ -4,6 +4,7 @@ db = SQLAlchemy()
 
 
 class Users(db.Model):
+    """Database model for users."""
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -11,9 +12,10 @@ class Users(db.Model):
 
 
 class Movies(db.Model):
+    """Database model for movies."""
     __tablename__ = "movies"
 
-    id = db.Column(db.Integer,primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
     director = db.Column(db.String(100))
     year = db.Column(db.Integer)
@@ -22,6 +24,7 @@ class Movies(db.Model):
 
 
 class FavouriteMovies(db.Model):
+    """Association table linking users and their favourite movies."""
     __tablename__ = "favourite_movies"
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
