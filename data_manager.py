@@ -6,9 +6,15 @@ class DataManager:
 
 
     def create_user(self, name):
-        new_user = Users(name=name)
-        self.db.session.add(new_user)
-        self.db.session.commit()
+        if not name or name.strip() == "":  #1. None, .strip() leerzeichen raus, nur "Enter" gedrückt
+            return "Invalid input - please type in username."  # Nachricht im
+
+        try:
+            new_user = Users(name=name)
+            self.db.session.add(new_user)
+            self.db.session.commit()
+        except ValueError as e:
+            return f"{e}"
 
 
     def get_users(self):
@@ -29,12 +35,12 @@ class DataManager:
 
 
     def add_movie(self, title, director, year, poster_url, user_id):
-        # 1. Movie-Objekt bauen und speichern
+        # Creates and saves movie-object
         new_movie = Movies(title=title, director=director, year=year,poster_url=poster_url)
         self.db.session.add(new_movie)
         self.db.session.commit()
 
-        # 2. Favoriten-Verknüpfung speichern
+        # Saves movie to users favourites
         fav = FavouriteMovies(user_id=user_id, movie_id=new_movie.id)
         self.db.session.add(fav)
         self.db.session.commit()

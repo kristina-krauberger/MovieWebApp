@@ -6,6 +6,17 @@
     <label for="title">Movie Title:</label><br>
     <input type="text" id="title" name="title"><br>
     <input type="submit" value="Add New Movie">
+    {% with messages = get_flashed_messages(category_filter=["add_movie_error"]) %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
 </form>
 
 {% for movie in movies %}
@@ -14,8 +25,19 @@
     <h3>{{ movie.title }}</h3>
 
     <form action="{{ url_for('update_movie_title', user_id=user_id, movie_id=movie.id) }}" method="POST">
-        <input type="text" id="title" name="title" value={{ movie.title }}><br>
+        <input type="text" id="title" name="title" value="{{ movie.title }}"><br>
         <input type="submit" value="Update">
+        {% with messages = get_flashed_messages(category_filter=["update_title_error"]) %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
     </form>
 
     <p><strong>Year:</strong> {{ movie.year }}</p>
